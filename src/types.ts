@@ -4,10 +4,14 @@ export interface Diagnosis {
   latin?: string;
 }
 
+export interface Entry {
+  test: string;
+}
+
 export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other"
+  Male = 'male',
+  Female = 'female',
+  Other = 'other',
 }
 
 export interface Patient {
@@ -17,4 +21,5 @@ export interface Patient {
   gender: Gender;
   ssn?: string;
   dateOfBirth?: string;
+  entries?: Entry[];
 }
