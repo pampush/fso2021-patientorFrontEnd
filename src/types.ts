@@ -1,11 +1,9 @@
+import { Entry } from './dianosesTypes';
+
 export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
-}
-
-export interface Entry {
-  test: string;
 }
 
 export enum Gender {
@@ -14,6 +12,7 @@ export enum Gender {
   Other = 'other',
 }
 
+
 export interface Patient {
   id: string;
   name: string;
@@ -21,5 +20,5 @@ export interface Patient {
   gender: Gender;
   ssn?: string;
   dateOfBirth?: string;
-  entries?: Entry[];
+  entries: Entry[];
 }

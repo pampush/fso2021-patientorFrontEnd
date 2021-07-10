@@ -1,6 +1,7 @@
+import { Entry, Type } from '../dianosesTypes';
 import { Patient, Gender } from '../types';
 
-const parseText = (text: unknown): string => {
+export const parseText = (text: unknown): string => {
   if (!(text && isString(text))) throw new Error('Incorrect or missing text');
   return text;
 };
@@ -17,6 +18,25 @@ const parseGender = (gender: unknown): Gender => {
 
 function isGender(str: string): str is Gender {
   return Object.values(Gender).includes(str as Gender);
+}
+
+const parseEntry = (entries: unknown): Entry[] => {
+  if (!isEntry(entries)) throw new Error('Incorrect or missing entry');
+  return entries;
+};
+
+export const parseType = (type: unknown): Type => {
+  if (!(type && isType(type))) throw new Error('Incorrect or missing entry');
+  return type;
+};
+
+const isType = (type: unknown): type is Type => {
+  return Object.values(Type).includes(type as Type);
+};
+
+function isEntry(entries: any): entries is Entry[] {
+  if (entries.length === 0) return true;
+  return Object.values(Type).includes(entries[0].type as Type);
 }
 
 type Fields = {
@@ -37,7 +57,7 @@ export const toNewPatientEntry = (object: Fields): Patient => {
     occupation: parseText(object.occupation),
     dateOfBirth: parseText(object.dateOfBirth),
     ssn: parseText(object.ssn),
-    entries: [],
+    entries: parseEntry(object.entries),
   };
 
   return newEntry;

@@ -7,11 +7,13 @@ import AddPatientModal from '../AddPatientModal';
 import { Patient } from '../types';
 import { apiBaseUrl } from '../constants';
 import HealthRatingBar from '../components/HealthRatingBar';
-import { useStateValue } from '../state';
+import { addPatient, useStateValue } from '../state';
+import { useHistory } from 'react-router-dom';
 
 const PatientListPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const history = useHistory();
 
+  const [{ patients }, dispatch] = useStateValue();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
 
@@ -25,12 +27,16 @@ const PatientListPage = () => {
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
       const { data: newPatient } = await axios.post<Patient>(`${apiBaseUrl}/patients`, values);
-      dispatch({ type: 'ADD_PATIENT', payload: newPatient });
+      dispatch(addPatient(newPatient));
       closeModal();
     } catch (e) {
       console.error(e.response?.data || 'Unknown Error');
       setError(e.response?.data?.error || 'Unknown error');
     }
+  };
+
+  const handleTableRowClick: (patient: Patient) => void = (patient) => {
+    history.push(`/patients/${patient.id}`);
   };
 
   return (
@@ -49,7 +55,7 @@ const PatientListPage = () => {
         </Table.Header>
         <Table.Body>
           {Object.values(patients).map((patient: Patient) => (
-            <Table.Row key={patient.id}>
+            <Table.Row key={patient.id} onClick={() => handleTableRowClick(patient)}>
               <Table.Cell>{patient.name}</Table.Cell>
               <Table.Cell>{patient.gender}</Table.Cell>
               <Table.Cell>{patient.occupation}</Table.Cell>

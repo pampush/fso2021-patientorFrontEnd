@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { Button, Divider, Header, Container } from 'semantic-ui-react';
 
 import { apiBaseUrl } from './constants';
-import { addPatientList, useStateValue } from './state';
-import { Patient } from './types';
+import { addDiagnosesList, addPatientList, useStateValue } from './state';
+import { Diagnosis, Patient } from './types';
 
 import PatientListPage from './PatientListPage';
 import { PatientCard } from './components';
+import TestContainer from './components/TestContainer';
 
 const App = () => {
   const [, dispatch] = useStateValue();
@@ -19,8 +20,13 @@ const App = () => {
       try {
         const { data: patientListFromApi } = await axios.get<Patient[]>(`${apiBaseUrl}/patients`);
         dispatch(addPatientList(patientListFromApi));
+
+        const { data: diagnosesListFromApi } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`,
+        );
+        dispatch(addDiagnosesList(diagnosesListFromApi));
       } catch (e) {
-        console.error(e);
+        console.error(e.message);
       }
     };
     void fetchPatientList();
@@ -41,6 +47,11 @@ const App = () => {
             </Route>
             <Route path="/patients/:id">
               <PatientCard />
+            </Route>
+            <Route path="/test">
+              <TestContainer>
+                <div>test</div>
+              </TestContainer>
             </Route>
           </Switch>
         </Container>
