@@ -1,15 +1,14 @@
 import React from 'react';
-
 import { Modal } from 'semantic-ui-react';
+import { FormikHelpers } from 'formik';
 
 import { EntryValues } from './AddEntryForm';
-
 import AddEntryForm from './AddEntryForm';
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSubmit: (values: EntryValues) => void;
+  onSubmit: (values: EntryValues, helpers: FormikHelpers<EntryValues>) => void;
 }
 
 function AddEntryModal({ open, onClose, onSubmit }: Props) {

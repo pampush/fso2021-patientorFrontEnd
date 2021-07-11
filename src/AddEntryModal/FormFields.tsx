@@ -9,9 +9,13 @@ import { Type } from '../dianosesTypes';
 import { CustomTextField, NumberField } from '../components/CustomInput';
 import { parseType } from '../utils/patient';
 
-function FormFields() {
+interface FormField {
+  currentType: string;
+  setCurrentType: (a: Type) => void;
+}
+
+function FormFields({ currentType, setCurrentType }: FormField) {
   const [{ diagnoses }] = useStateValue();
-  const [currentType, setCurrentType] = React.useState<Type>(Type.HealthCheck);
 
   function dynamicFields() {
     switch (currentType) {
@@ -52,27 +56,29 @@ function FormFields() {
 
   return (
     <Grid.Column width={16}>
-      <Form.Field>
-        <CustomTextField name="description" label="Description" type="text" />
-      </Form.Field>
-      <Form.Field>
-        <CustomTextField name="date" label="Date" type="date" />
-      </Form.Field>
-      <Form.Field>
-        <CustomTextField name="specialist" label="Specialist" type="text" />
-      </Form.Field>
-      <Form.Field>
-        <DiagnosisSelection name="diagnosisCodes" label="Diagnoses" diagnoses={diagnoses} />
-      </Form.Field>
-      <Form.Field>
-        <TypeSelection
-          name="type"
-          label="Type"
-          types={Object.values(Type)}
-          setCurrentType={setCurrentType}
-        />
-      </Form.Field>
-      {dynamicFields()}
+      <Form>
+        <Form.Field>
+          <CustomTextField name="description" label="Description" type="text" />
+        </Form.Field>
+        <Form.Field>
+          <CustomTextField name="date" label="Date" type="date" />
+        </Form.Field>
+        <Form.Field>
+          <CustomTextField name="specialist" label="Specialist" type="text" />
+        </Form.Field>
+        <Form.Field>
+          <DiagnosisSelection name="diagnosisCodes" label="Diagnoses" diagnoses={diagnoses} />
+        </Form.Field>
+        <Form.Field>
+          <TypeSelection
+            name="type"
+            label="Type"
+            types={Object.values(Type)}
+            setCurrentType={setCurrentType}
+          />
+        </Form.Field>
+        {dynamicFields()}
+      </Form>
     </Grid.Column>
   );
 }
@@ -86,7 +92,7 @@ interface TypeSelectionProps {
 
 export const TypeSelection = ({ setCurrentType, ...props }: TypeSelectionProps) => {
   const [field] = useField(props.name);
-  const { setFieldValue, setFieldTouched } = useFormikContext();
+  const { setFieldValue, setFieldTouched, resetForm } = useFormikContext();
   const stateOptions = props.types.map((type) => ({
     key: type,
     text: type,
@@ -102,6 +108,7 @@ export const TypeSelection = ({ setCurrentType, ...props }: TypeSelectionProps) 
         {...props}
         {...field}
         onChange={(e, data) => {
+          resetForm();
           setFieldValue(props.name, data.value);
           const str = parseType(data.value);
           setCurrentType(str);

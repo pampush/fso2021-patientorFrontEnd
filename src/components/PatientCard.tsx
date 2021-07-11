@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Icon, Card, Button } from 'semantic-ui-react';
 import axios from 'axios';
+import { FormikHelpers } from 'formik';
 import { apiBaseUrl } from '../constants';
 
 import { Patient } from '../types';
@@ -36,7 +37,9 @@ function PatientCard() {
     setModelOpen(true);
   };
 
-  const handleSubmit = async (values: EntryValues) => {
+  const handleSubmit = async (values: EntryValues, helpers: FormikHelpers<EntryValues>) => {
+    console.log(helpers);
+
     let payload: {
       description: string;
       date: string;

@@ -1,12 +1,14 @@
 import React from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import { Button, Grid } from 'semantic-ui-react';
 
 import FormFields from './FormFields';
 import { Type } from '../dianosesTypes';
-// FOrm field
-interface Props {
-  onSubmit: (values: EntryValues) => void;
+import initialValues from './initialValues';
+import validationSchema from './validationSchema';
+
+interface FormProps {
+  onSubmit: (values: EntryValues, helpers: FormikHelpers<EntryValues>) => void;
   onCancel: () => void;
 }
 
@@ -20,30 +22,32 @@ export interface EntryValues {
   occupational: { employerName: string; sickLeave: { startDate: string; endDate: string } };
 }
 
-function AddEntryForm({ onSubmit, onCancel }: Props) {
-  // TODO: Change validation scheme on type change
-  // const validationScheme
+function AddEntryForm({ onSubmit, onCancel }: FormProps) {
+  const [currentType, setCurrentType] = React.useState<Type>(Type.HealthCheck);
+  const [indexOfValidationSchema, setIndexOfValidationSchema] = React.useState<number>(0);
 
-  // React.useEffect(() => {
-
-  // })
+  React.useEffect(() => {
+    switch (currentType) {
+      case Type.HealthCheck:
+        setIndexOfValidationSchema(0);
+        break;
+      case Type.OccupationalHealthCare:
+        setIndexOfValidationSchema(1);
+        break;
+      default:
+        break;
+    }
+  }, [currentType]);
 
   return (
     <Formik
-      initialValues={{
-        description: '',
-        date: '2021-07-11',
-        specialist: '',
-        type: Type.HealthCheck,
-        diagnosisCodes: [],
-        health: { healthCheckRating: '' },
-        occupational: { employerName: '', sickLeave: { startDate: '', endDate: '' } },
-      }}
+      initialValues={initialValues}
+      validationSchema={validationSchema[indexOfValidationSchema]}
       onSubmit={onSubmit}>
       {({ isSubmitting }) => (
         <Form>
           <Grid columns={16}>
-            <FormFields />
+            <FormFields currentType={currentType} setCurrentType={setCurrentType} />
           </Grid>
           <Grid>
             <Grid.Column floated="left" width={5}>
