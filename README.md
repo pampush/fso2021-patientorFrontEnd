@@ -1,5 +1,5 @@
 # Patientor - frontend
-Look at that video which demostrates form interaction. This form build with semantic-ui-react, formik, yup.  
+Look at this video which demonstrates form in action. This form build with semantic-ui-react, formik, yup.  
 I had to do some formik customizations to make it work with semantic-ui components. Note that the form is dynamic.
 
 https://user-images.githubusercontent.com/32041268/125266943-00101280-e30f-11eb-9b52-cec8e233dc58.mp4
